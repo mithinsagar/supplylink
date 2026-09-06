@@ -72,6 +72,12 @@ def pytest_configure(config: pytest.Config) -> None:
     os.environ["SUPPLYLINK_LLM_ENABLED"] = "false"
     os.environ.pop("SUPPLYLINK_LLM_API_KEY", None)
 
+    # Pin the render width. Rich truncates table cells to fit the terminal, so
+    # without this the CLI tests pass or fail depending on how wide the
+    # developer's window happens to be — and CI's width is anyone's guess. Set
+    # here because the console is constructed at import time.
+    os.environ["COLUMNS"] = "160"
+
 
 @pytest.fixture(scope="session")
 def database_url() -> str:

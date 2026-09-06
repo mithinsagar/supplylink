@@ -43,7 +43,19 @@ class TestBasics:
 
 class TestContracts:
     def test_list(self, db: None) -> None:
-        assert "erp_core" in invoke("contracts", "list").stdout
+        """Content is asserted through --json; the table is asserted to render.
+
+        Rich truncates cells to fit the terminal, so asserting on a substring of
+        a table couples the test to a window width.
+        """
+        result = invoke("contracts", "list")
+        assert result.exit_code == EXIT_OK
+        assert "Data contracts" in result.stdout
+
+        sources = {
+            entry["source_id"] for entry in json.loads(invoke("contracts", "list", "--json").stdout)
+        }
+        assert sources == {"erp_core", "acme_supplier", "globalparts_api"}
 
     def test_list_json_includes_the_content_hash(self, db: None) -> None:
         entries = json.loads(invoke("contracts", "list", "--json").stdout)
@@ -130,7 +142,12 @@ class TestInspection:
         return run_pipeline("erp_core", trigger="test")
 
     def test_runs_list(self, loaded) -> None:
-        assert "erp_core" in invoke("runs", "list").stdout
+        result = invoke("runs", "list")
+        assert result.exit_code == EXIT_OK
+        assert "Pipeline runs" in result.stdout
+
+        runs = json.loads(invoke("runs", "list", "--json").stdout)
+        assert [run["source_id"] for run in runs] == ["erp_core"]
 
     def test_runs_show(self, loaded) -> None:
         output = invoke("runs", "show", str(loaded.run_id)).stdout
