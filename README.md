@@ -1,5 +1,10 @@
 # SupplyLink
 
+[![CI](https://github.com/mithinsagar/supplylink/actions/workflows/ci.yml/badge.svg)](https://github.com/mithinsagar/supplylink/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)](https://www.python.org)
+[![PostgreSQL 16](https://img.shields.io/badge/postgresql-16-336791)](https://www.postgresql.org)
+[![Licence: MIT](https://img.shields.io/badge/licence-MIT-green)](LICENSE)
+
 **Multi-source data integration and reconciliation for supply-chain master data.**
 
 Three systems describe the same product. None of them agree on how to say so.
@@ -25,7 +30,7 @@ codebase.
 | | |
 | --- | --- |
 | **Stack** | Python 3.11+ · PostgreSQL 16 · SQLAlchemy Core · Alembic · FastAPI · Typer · Docker |
-| **Tests** | 391 passing · 91% coverage · unit, integration, API, and failure-path |
+| **Tests** | 395 passing · 91% coverage · unit, integration, API, and failure-path |
 | **Quality** | Ruff · mypy · GitHub Actions across Python 3.11–3.13 |
 | **Docs** | [Architecture](docs/architecture.md) · [Data model](docs/data-model.md) · [Contracts](docs/data-contracts.md) · [Lifecycle](docs/pipeline-lifecycle.md) · [Reconciliation](docs/reconciliation.md) · [9 ADRs](docs/decisions/) |
 
@@ -578,7 +583,7 @@ Every command supports `--json`. Exit codes: `0` clean, `1` run-level failure,
 make check     # lint + typecheck + tests
 ```
 
-**391 tests, 91% coverage.** Integration tests run against a **real PostgreSQL**,
+**395 tests, 91% coverage.** Integration tests run against a **real PostgreSQL**,
 not a mock and not SQLite — the most important guarantees in this system are
 enforced by Postgres, and a test double would assert that the Python is
 self-consistent while proving nothing about any of them.
