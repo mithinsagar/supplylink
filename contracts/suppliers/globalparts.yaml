@@ -1,0 +1,227 @@
+# =============================================================================
+# GlobalParts — vendor REST API.
+#
+# A paginated JSON catalogue. Field names share nothing with the ERP's, the
+# category is a department code, and price arrives as a JSON number rather than
+# a string. None of that requires Python: the mapping section is the translation.
+#
+# Precedence 30 makes this the least authoritative feed. It is useful for
+# discovering SKUs neither the ERP nor ACME carries, but it never overwrites them.
+# =============================================================================
+
+contract:
+  version: "1.0.1"
+  effective_from: 2026-02-01
+  owner: supplier-integrations
+  description: >
+    Vendor catalogue API. Polled on demand; paginated by page number.
+
+source:
+  id: globalparts_api
+  display_name: GlobalParts Vendor API
+  type: rest
+  precedence: 30
+  rest:
+    # Never a literal URL or credential in the contract. The variable is named
+    # here; its value comes from the environment.
+    base_url: "${VENDOR_API_URL:-http://localhost:8081}"
+    path: /v1/catalog
+    method: GET
+    records_path: items
+    query:
+      warehouse: IN-BLR
+    auth:
+      type: bearer
+      token_env: VENDOR_API_TOKEN
+
+    pagination:
+      style: page_number
+      page_param: page
+      size_param: pageSize
+      page_size: 40
+      first_page: 1
+      total_pages_path: meta.totalPages
+      max_pages: 50
+
+    timeout_seconds: 10.0
+    max_attempts: 4
+    backoff_initial_seconds: 0.4
+    backoff_max_seconds: 6.0
+    # Transient statuses only. A 401 or 404 will not fix itself on retry — it
+    # will just cost four times as long to report the same problem.
+    retry_on_status: [408, 425, 429, 500, 502, 503, 504]
+
+identity:
+  source_record_id: itemId
+
+mapping:
+  # 'wm_001' -> 'WM001'
+  canonical_sku:
+    from: itemId
+    transforms: [trim, sku_normalise]
+
+  product_name:
+    from: description
+    transforms: [nfkc, trim, collapse_whitespace, title_case]
+
+  # GlobalParts sends department codes, not category names.
+  category:
+    from: dept
+    transforms: [nullify_placeholders, trim, upper]
+    lookup: department_map
+
+  supplier_id:
+    from: vendor
+    transforms: [nullify_placeholders, trim, supplier_id_normalise]
+
+  unit_price:
+    from: price
+    transforms: [nullify_placeholders]
+
+  currency:
+    from: currencyCode
+    transforms: [nullify_placeholders, trim, currency_normalise]
+    default: INR
+
+  quantity_available:
+    from: availableUnits
+    transforms: [nullify_placeholders]
+
+  status:
+    from: lifecycle
+    transforms: [nullify_placeholders, trim, upper]
+    lookup: status_map
+    default: ACTIVE
+
+lookups:
+  department_map:
+    ELEC: ELECTRONICS
+    ELECTRONICS: ELECTRONICS
+    ACC: ACCESSORIES
+    ACCESSORIES: ACCESSORIES
+    PERIPH: PERIPHERALS
+    PERIPHERALS: PERIPHERALS
+    NET: NETWORKING
+    NETWORKING: NETWORKING
+    STOR: STORAGE
+    STORAGE: STORAGE
+    CBL: CABLES
+    CABLES: CABLES
+    PWR: POWER
+    POWER: POWER
+
+  status_map:
+    LIVE: ACTIVE
+    ACTIVE: ACTIVE
+    EOL: DISCONTINUED
+    DISCONTINUED: DISCONTINUED
+    OBSOLETE: DISCONTINUED
+
+validation:
+  canonical_sku:
+    required: true
+    type: string
+    min_length: 3
+    max_length: 32
+    regex: "^[A-Z0-9]{3,32}$"
+    unique: true
+
+  product_name:
+    required: true
+    type: string
+    min_length: 2
+    max_length: 200
+
+  category:
+    required: true
+    type: string
+    allowed_values:
+      - ELECTRONICS
+      - ACCESSORIES
+      - PERIPHERALS
+      - NETWORKING
+      - STORAGE
+      - CABLES
+      - POWER
+
+  supplier_id:
+    required: true
+    type: string
+    regex: "^SUP-[0-9]{3}$"
+    references:
+      table: core.suppliers
+      column: supplier_id
+
+  unit_price:
+    required: true
+    type: decimal
+    min: 0
+    max: 10000000
+
+  currency:
+    required: true
+    type: string
+    allowed_values: [INR, USD, EUR, GBP]
+
+  quantity_available:
+    required: true
+    type: integer
+    min: 0
+    max: 1000000
+
+  status:
+    required: true
+    type: string
+    allowed_values: [ACTIVE, DISCONTINUED]
+
+rules:
+  - name: stocked_items_must_be_priced
+    expr: "quantity_available == 0 or unit_price > 0"
+    message: "An item with stock on hand must carry a non-zero price"
+    severity: error
+
+  - name: discontinued_items_should_be_empty
+    expr: "status == 'ACTIVE' or quantity_available == 0"
+    message: "A discontinued item still shows stock on hand"
+    severity: warning
+
+reconciliation:
+  checksum_columns:
+    - canonical_sku
+    - product_name
+    - category
+    - supplier_id
+    - unit_price
+    - currency
+
+  null_rate_columns:
+    - product_name
+    - category
+    - supplier_id
+    - unit_price
+
+  thresholds:
+    row_count_delta_pct:
+      warn: 0
+      fail: 2.0
+    quarantine_rate_pct:
+      warn: 3.0
+      fail: 20.0
+    duplicate_rate_pct:
+      warn: 1.0
+      fail: 8.0
+    null_rate_delta_pct:
+      warn: 3.0
+      fail: 12.0
+    orphan_rate_pct:
+      warn: 1.0
+      fail: 8.0
+
+scd:
+  tracked_attributes:
+    - product_name
+    - category
+    - supplier_id
+    - unit_price
+    - currency
+    - status

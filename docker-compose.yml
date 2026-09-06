@@ -1,0 +1,116 @@
+# =============================================================================
+# SupplyLink — local stack
+#
+#   docker compose up -d          start postgres, the API, and the vendor simulator
+#   docker compose run --rm cli … run a one-off CLI command
+#
+# The `app` service waits for a healthy database, then migrates and seeds before
+# serving. That ordering is what makes `docker compose up` sufficient on a clean
+# machine — no manual migration step, no start-up race.
+# =============================================================================
+
+name: supplylink
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-supplylink}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supplylink_local_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-supplylink}
+      # Deterministic collation, so ORDER BY and the checksum's digest sort do
+      # not depend on the host's locale.
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      # -d and -U matter: bare pg_isready reports ready during initdb, before
+      # the database actually accepts connections.
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-supplylink} -d ${POSTGRES_DB:-supplylink}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+    restart: unless-stopped
+
+  vendor-sim:
+    # A simulator for the GlobalParts REST source, so the demo runs end to end
+    # with no vendor account and no network. Not part of the application.
+    build:
+      context: .
+      target: runtime
+    command: ["uvicorn", "tools.vendor_sim.app:app", "--host", "0.0.0.0", "--port", "8081"]
+    environment:
+      VENDOR_SIM_CATALOG: /app/data/samples/globalparts/catalog.json
+      VENDOR_SIM_FAIL_FIRST_N: ${VENDOR_SIM_FAIL_FIRST_N:-0}
+      VENDOR_SIM_FAIL_RATE: ${VENDOR_SIM_FAIL_RATE:-0}
+      VENDOR_SIM_LATENCY_MS: ${VENDOR_SIM_LATENCY_MS:-0}
+    ports:
+      - "${VENDOR_SIM_PORT:-8081}:8081"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8081/health').status==200 else 1)\""]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      target: runtime
+    depends_on:
+      postgres:
+        condition: service_healthy
+      vendor-sim:
+        condition: service_started
+    environment: &app_env
+      SUPPLYLINK_DATABASE_URL: >-
+        postgresql+psycopg://${POSTGRES_USER:-supplylink}:${POSTGRES_PASSWORD:-supplylink_local_dev}@postgres:5432/${POSTGRES_DB:-supplylink}
+      SUPPLYLINK_LOG_LEVEL: ${SUPPLYLINK_LOG_LEVEL:-INFO}
+      SUPPLYLINK_LOG_FORMAT: ${SUPPLYLINK_LOG_FORMAT:-console}
+      SUPPLYLINK_LLM_ENABLED: ${SUPPLYLINK_LLM_ENABLED:-true}
+      SUPPLYLINK_LLM_PROVIDER: ${SUPPLYLINK_LLM_PROVIDER:-xai}
+      SUPPLYLINK_LLM_API_KEY: ${SUPPLYLINK_LLM_API_KEY:-}
+      SUPPLYLINK_LLM_MODEL: ${SUPPLYLINK_LLM_MODEL:-grok-4-fast}
+      VENDOR_API_URL: http://vendor-sim:8081
+      VENDOR_API_TOKEN: ${VENDOR_API_TOKEN:-demo-local-token}
+    # Migrate and seed before serving. Both are idempotent, so a restart is safe.
+    command:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        echo "Applying migrations…"
+        alembic upgrade head
+        echo "Seeding reference data…"
+        supplylink db seed
+        echo "Starting API on :8000"
+        exec uvicorn supplylink.api:app --host 0.0.0.0 --port 8000
+    ports:
+      - "${SUPPLYLINK_API_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "supplylink", "health"]
+      interval: 15s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+    restart: unless-stopped
+
+  cli:
+    # One-off commands against the same stack:
+    #   docker compose run --rm cli run --source acme_supplier
+    #   docker compose run --rm cli sku history WM001
+    build:
+      context: .
+      target: runtime
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment: *app_env
+    entrypoint: ["supplylink"]
+    profiles: ["cli"]
+
+volumes:
+  postgres_data:

@@ -1,0 +1,63 @@
+product_code,product_name,category,unit_price,currency,qty,supplier_code
+cb001,usb-c to usb-c 2m,cables,899.00,INR,269,SUP89
+cb002,hdmi 2.1 cable 3m,cables,1299.00,INR,766,SUP68
+cb003,displayport 1.4 cable 2m,cables,1099,RS,509,SUP13
+cb004,cat6a patch cable 5m,cables,499.00,INR,165,SUP404
+cb005,usb-c to lightning 1m,cables,1599.00,INR,520,SUP21
+cb007,usb-a to usb-c 1m,cables,449.00,INR,603,SUP01
+cb008,cat6 patch cable 0.5m,cables,"2,799",INR,253,SUP888
+cb009,hdmi to displayport adapter,cables,1799.00,INR,295,SUP404
+cb011,usb extension cable 3m,cables,n/a,INR,282,SUP68
+cb012,audio jack 3.5mm 2m,cables,349,INR,591,SUP21
+dk001,usb-c docking station,accessories,8999.00,INR,172,SUP42
+dk002,thunderbolt 4 dock,accessories,24999.00,INR,360,SUP07
+dk003,laptop stand aluminium,accessories,2199,INR,61,SUP68
+dk004,monitor arm dual,accessories,6799,INR,422,SUP07
+dk005,,accessories,1299.00,INR,485,SUP21
+dk006,laptop riser adjustable,accessories,3299.00,INR,-1,SUP55
+dk007,sit stand desk converter,accessories,15999,INR,684,SUP55
+dk010,footrest ergonomic,accessories,₹749,INR,848,SUP76
+hs001,over-ear headset,accessories,3999.00,INR,-60,SUP68
+hs003,noise cancelling headphones,accessories,21999,INR,564,SUP13
+hs006,mono call centre headset,accessories,2899.00,INR,679,SUP89
+hs007,bone conduction headset,widgets,9499.00,INR,271,SUP07
+hs008,gaming headset 7.1,accessories,7299,INR,47,SUP21
+kb001,mechanical keyboard tkl,peripherals,6499,INR,246,SUP68
+kb003,backlit membrane keyboard,peripherals,1499,INR,157,SUP07
+kb010,bluetooth multi-device keyboard,peripherals,4299,INR,330,SUP07
+kb011,rugged spill resistant keyboard,peripherals,2699,INR,-43,SUP01
+kb012,keyboard and mouse combo,peripherals,1999,INR,687,SUP07
+mn001,27 inch qhd monitor,electronics,24999,INR,213,SUP01
+mn002,32 inch 4k monitor,electronics,42999.00,INR,544,SUP21
+mn003,24 inch fhd monitor,electronics,0,INR,45,SUP89
+mn005,portable usb-c monitor,electronics,18999.00,INR,777,SUP55
+mn007,22 inch business monitor,electronics,8999,INR,507,SUP07
+mn008,49 inch super ultrawide,electronics,94999,INR,439,SUP89
+mn009,24 inch touchscreen monitor,electronics,27499.00,INR,49,SUP55
+mn010,colour calibrated 4k monitor,electronics,66999,INR,164,SUP55
+nw001,wi-fi 6 access point,networking,9999,INR,214,SUP89
+nw002,8 port gigabit switch,networking,2499.00,INR,200,SUP01
+nw005,mesh router 3 pack,networking,16999,INR,822,SUP68
+nw006,poe injector,networking,1899,INR,687,SUP777
+nw008,5 port unmanaged switch,networking,1299,INR,541,SUP21
+nw009,10gbe network card,networking,12499.00,INR,655,SUP76
+nw010,fibre media converter,networking,3899,INR,-44,SUP34
+pw002,100w gan charger,power,4499,INR,502,SUP01
+pw007,140w gan charger,power,6999.00,INR,850,SUP13
+pw010,car charger dual usb-c,power,1499.00,INR,190,SUP42
+pw011,10000mah slim power bank,power,2299,INR,867,SUP34
+pw012,pdu 8 outlet metered,power,22999,INR,532,SUP13
+sd002,2tb nvme ssd,storage,13999.00,INR,260,SUP21
+sd003,512gb portable ssd,storage,4999,INR,-55,SUP89
+sd005,64gb usb 3.2 flash drive,storage,699,INR,106,SUP01
+sd006,8tb nas drive,storage,21499,INR,619,SUP89
+sd009,16tb enterprise hdd,storage,42999,INR,405,SUP68
+sd011,4tb nvme ssd,storage,27999.00,INR,575,SUP68
+wm001,wireless mouse,electronics,799.00,INR,778,SUP55
+wm003,bluetooth travel mouse,electronics,1299.00,INR,-2,SUP42
+wm005,trackball mouse,electronics,3499,INR,267,SUP13
+wm007,presenter mouse with laser pointer,electronics,2799,INR,103,SUP13
+wm008,left handed mouse,electronics,1899,INR,106,SUP42
+wm010,compact travel mouse,electronics,649,INR,328,SUP777
+cb005,usb-c to lightning 1m,cables,1599.00,INR,520,SUP21
+cb012,audio jack 3.5mm 2m,cables,349,INR,13,SUP21

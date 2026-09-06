@@ -1,0 +1,100 @@
+SKU,Name,Category,Price,Currency,Stock,Supplier,Status
+WM-001,Wireless Mouse,Electronics,799.00,INR,741,SUP-055,ACTIVE
+WM-002,Ergonomic Vertical Mouse,Electronics,2499.00,INR,858,SUP-055,DISCONTINUED
+WM-003,Bluetooth Travel Mouse,Electronics,1299.00,INR,385,SUP-042,ACTIVE
+WM-004,Gaming Mouse 16000 DPI,Electronics,4999.00,INR,-12,SUP-068,ACTIVE
+WM-005,Trackball Mouse,Electronics,3499.00,INR,240,SUP-013,ACTIVE
+WM-006,Silent Click Mouse,Electronics,1099.00,INR,792,SUP-055,ACTIVE
+WM-007,Presenter Mouse with Laser Pointer,Electronics,2799.00,INR,112,SUP-013,DISCONTINUED
+WM-008,Left Handed Mouse,Electronics,1899.00,INR,141,SUP-042,ACTIVE
+WM-009,Rechargeable Wireless Mouse,Electronics,2299.00,INR,660,SUP-068,ACTIVE
+WM-010,Compact Travel Mouse,Electronics,649.00,INR,319,SUP-055,ACTIVE
+KB-001,Mechanical Keyboard TKL Hot-Swap,Peripherals,6499.00,INR,209,SUP-068,ACTIVE
+KB-002,Wireless Compact Keyboard,Peripherals,2899.00,INR,86,SUP-999,ACTIVE
+KB-003,Backlit Membrane Keyboard,Peripherals,1499.00,INR,139,SUP-007,ACTIVE
+KB-004,Split Ergonomic Keyboard,Peripherals,11999.00,INR,0,SUP-068,ACTIVE
+KB-005,Numeric Keypad,Peripherals,899.00,INR,180,SUP-001,ACTIVE
+KB-006,Low Profile Mechanical Keyboard,Peripherals,8499.00,INR,347,SUP-055,ACTIVE
+KB-007,Full Size Wired Keyboard,Peripherals,1199.00,INR,669,SUP-089,ACTIVE
+KB-008,Keyboard Wrist Rest Gel,Peripherals,749.00,INR,427,SUP-007,ACTIVE
+KB-009,Programmable Macro Pad,Peripherals,3899.00,INR,188,SUP-013,DISCONTINUED
+KB-010,Bluetooth Multi-Device Keyboard,Peripherals,4299.00,RUPEE,348,SUP-007,ACTIVE
+KB-011,Rugged Spill Resistant Keyboard,Peripherals,2699.00,INR,292,SUP-001,ACTIVE
+KB-012,Keyboard and Mouse Combo,Peripherals,1999.00,INR,681,SUP-007,ACTIVE
+MN-001,27 Inch QHD Monitor,Electronics,27499.00,INR,187,SUP-001,ACTIVE
+MN-002,32 Inch 4K Monitor,Electronics,42999.00,INR,551,SUP-021,ACTIVE
+MN-003,24 Inch FHD Monitor,Electronics,12499.00,INR,561,SUP-089,ACTIVE
+MN-004,34 Inch Ultrawide Monitor,Electronics,58999.00,INR,478,SUP-055,ACTIVE
+MN-005,Portable USB-C Monitor,Electronics,18999.00,INR,811,SUP-055,ACTIVE
+MN-006,27 Inch 144Hz Gaming Monitor,Electronics,,INR,540,SUP-055,ACTIVE
+MN-007,22 Inch Business Monitor,Electronics,8999.00,INR,529,SUP-007,DISCONTINUED
+MN-008,49 Inch Super Ultrawide,Electronics,94999.00,INR,474,SUP-089,ACTIVE
+MN-009,24   Inch Touchscreen Monitor,Electronics,27499.00,INR,74,SUP-055,ACTIVE
+MN-010,Colour Calibrated 4K Monitor,Electronics,66999.00,INR,176,SUP-055,ACTIVE
+HS-001,Over-Ear Headset,Accessories,3999.00,INR,142,SUP-068,ACTIVE
+HS-002,USB Conference Headset,Accessories,5499.00,INR,32,SUP-021,ACTIVE
+HS-003,Noise   Cancelling Headphones,Accessories,21999.00,INR,538,SUP-013,ACTIVE
+HS-004,In-Ear Monitor,Accessories,1799.00,INR,655,SUP-021,ACTIVE
+HS-005,Wireless Earbuds,Accessories,6499.00,INR,472,SUP-007,ACTIVE
+HS-006,Mono   Call Centre Headset,Accessories,2899.00,INR,700,SUP-089,ACTIVE
+HS-007,Bone Conduction Headset,Accessories,9499.00,INR,295,SUP-007,ACTIVE
+HS-008,Gaming Headset 7.1,Accessories,7299.00,INR,16,SUP-021,DISCONTINUED
+DK-001,USB-C   Docking Station,Accessories,8999.00,INR,157,SUP-042,ACTIVE
+DK-002,Thunderbolt 4 Dock,Accessories,24999.00,INR,336,SUP-007,ACTIVE
+DK-003,Laptop   Stand Aluminium,Accessories,2199.00,INR,34,SUP-068,ACTIVE
+DK-004,Monitor   Arm Dual,Accessories,6799.00,INR,420,SUP-007,ACTIVE
+DK-005,Under Desk Cable Tray,Accessories,1299.00,INR,478,SUP-021,ACTIVE
+DK-006,Laptop Riser Adjustable,Accessories,3299.00,INR,854,SUP-055,ACTIVE
+DK-007,Sit Stand Desk Converter,Accessories,15999.00,INR,720,SUP-055,ACTIVE
+DK-008,Docking Station 11-in-1,Accessories,6299.00,INR,397,SUP-076,ACTIVE
+DK-009,Monitor Arm Single Gas Spring,Accessories,4199.00,INR,844,SUP-001,DISCONTINUED
+DK-010,Footrest Ergonomic,Accessories,2499.00,INR,840,SUP-076,ACTIVE
+SD-001,1TB NVMe SSD,Storage,7499.00,INR,544,SUP-068,ACTIVE
+SD-002,2TB NVMe SSD,Storage,13999.00,INR,223,SUP-034,ACTIVE
+SD-003,512GB Portable SSD,Storage,4999.00,INR,215,SUP-089,ACTIVE
+SD-004,4TB External HDD,Storage,8999.00,INR,237,SUP-001,ACTIVE
+SD-005,64GB   USB 3.2 Flash Drive,Storage,699.00,INR,84,SUP-001,ACTIVE
+SD-006,8TB   NAS Drive,Storage,21499.00,INR,655,SUP-089,ACTIVE
+SD-007,256GB microSD Card,Storage,1899.00,INR,573,SUP-042,ACTIVE
+SD-008,1TB Portable SSD Rugged,Storage,11499.00,INR,916,SUP-013,ACTIVE
+SD-009,16TB Enterprise HDD,Storage,42999.00,INR,429,SUP-068,ACTIVE
+SD-010,M.2 NVMe Enclosure,Storage,2299.00,INR,342,SUP-055,ACTIVE
+SD-011,4TB NVMe SSD,Storage,27999.00,INR,563,SUP-068,ACTIVE
+SD-012,2TB Network Attached Storage,Storage,34999.00,INR,795,SUP-021,ACTIVE
+NW-001,Wi-Fi 6 Access Point,Networking,9999.00,INR,209,SUP-089,ACTIVE
+NW-002,8 Port Gigabit Switch,Networking,2499.00,INR,235,SUP-001,DISCONTINUED
+NW-003,24 Port Managed Switch,Networking,18999.00,INR,523,SUP-068,DISCONTINUED
+NW-004,USB-C Ethernet Adapter,Networking,1199.00,INR,264,SUP-076,ACTIVE
+NW-005,Mesh Router 3 Pack,Networking,16999.00,INR,801,SUP-068,ACTIVE
+NW-006,PoE Injector,Networking,1899.00,INR,677,SUP-034,ACTIVE
+NW-007,Wi-Fi 6E Router,Networking,21999.00,INR,562,SUP-089,ACTIVE
+NW-008,5 Port Unmanaged Switch,Networking,1299.00,INR,556,SUP-021,ACTIVE
+NW-009,10GbE Network Card,Networking,12499.00,INR,629,SUP-076,ACTIVE
+NW-010,Fibre Media Converter,Networking,3899.00,INR,109,SUP-034,ACTIVE
+NW-011,48 Port PoE Switch,Networking,64999.00,INR,723,SUP-007,ACTIVE
+NW-012,Powerline Adapter Kit,Networking,4599.00,INR,378,SUP-055,ACTIVE
+CB-001,USB-C to USB-C 2m,Cables,899.00,INR,246,SUP-089,ACTIVE
+CB-002,HDMI 2.1 Cable 3m,Cables,1299.00,INR,801,SUP-068,ACTIVE
+CB-003,DisplayPort 1.4 Cable 2m,Cables,1099.00,INR,471,SUP-013,ACTIVE
+CB-004,Cat6A   Patch Cable 5m,Cables,549.00,INR,193,SUP-089,ACTIVE
+CB-005,USB-C to Lightning 1m,Cables,1599.00,INR,501,SUP-021,ACTIVE
+CB-006,Thunderbolt 4 Cable 0.8m,Cables,3499.00,INR,430,SUP-042,ACTIVE
+CB-007,USB-A to USB-C 1m,Cables,449.00,INR,569,SUP-001,ACTIVE
+CB-008,Cat6 Patch Cable 0.5m,Cables,199.00,INR,258,SUP-076,DISCONTINUED
+CB-009,HDMI to DisplayPort Adapter,Cables,1799.00,INR,330,SUP-068,ACTIVE
+CB-010,Fibre Optic HDMI 10m,Cables,6499.00,INR,749,SUP-013,ACTIVE
+CB-011,USB Extension Cable 3m,Cables,599.00,INR,261,SUP-068,ACTIVE
+CB-012,Audio Jack 3.5mm 2m,Cables,349.00,INR,587,SUP-021,DISCONTINUED
+PW-001,65W USB-C Charger,Power,2499.00,INR,780,SUP-001,ACTIVE
+PW-002,100W GaN Charger,Power,4499.00,INR,473,SUP-001,ACTIVE
+PW-003,Surge Protector 6 Way,Power,1699.00,INR,198,SUP-021,ACTIVE
+PW-004,20000mAh Power Bank,Power,3299.00,INR,185,SUP-042,ACTIVE
+PW-005,UPS 1000VA,Power,12999.00,INR,466,SUP-089,ACTIVE
+PW-006,Desktop Power Strip USB,Power,1999.00,INR,324,SUP-055,ACTIVE
+PW-007,140W GaN Charger,Power,6999.00,INR,848,SUP-013,DISCONTINUED
+PW-008,Wireless Charging Pad 15W,Power,2199.00,INR,163,SUP-089,ACTIVE
+PW-009,UPS 3000VA Rack Mount,Power,48999.00,INR,845,SUP-055,ACTIVE
+PW-010,Car Charger Dual USB-C,Power,1499.00,INR,183,SUP-042,ACTIVE
+PW-011,10000mAh Slim Power Bank,Power,2299.00,INR,867,SUP-034,ACTIVE
+PW-012,PDU 8 Outlet Metered,Power,22999.00,INR,506,SUP-013,ACTIVE
+WM-006,Silent Click Mouse,Electronics,1099.00,INR,117,SUP-055,ACTIVE

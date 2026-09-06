@@ -1,0 +1,452 @@
+[
+  {
+    "itemId": "cb_005",
+    "description": "USB-C to Lightning 1m",
+    "dept": "CBL",
+    "price": 1599.0,
+    "currencyCode": "INR",
+    "availableUnits": 520,
+    "vendor": "SUP021",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "cb_006",
+    "description": "Thunderbolt 4 Cable 0.8m",
+    "dept": "CBL",
+    "price": 3499.0,
+    "currencyCode": "INR",
+    "availableUnits": 449,
+    "vendor": "SUP042",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "cb_007",
+    "description": "USB-A to USB-C 1m",
+    "dept": "CBL",
+    "price": 449.0,
+    "currencyCode": "INR",
+    "availableUnits": 603,
+    "vendor": "SUP001",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "cb_011",
+    "description": "USB Extension Cable 3m",
+    "dept": "CBL",
+    "price": 599.0,
+    "currencyCode": "INR",
+    "availableUnits": 282,
+    "vendor": "SUP068",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "cb_012",
+    "description": "Audio Jack 3.5mm 2m",
+    "dept": "CBL",
+    "price": 349.0,
+    "currencyCode": "INR",
+    "availableUnits": 591,
+    "vendor": "SUP021",
+    "lifecycle": "EOL"
+  },
+  {
+    "itemId": "dk_004",
+    "description": "Monitor Arm Dual",
+    "dept": "MISC",
+    "price": 6799.0,
+    "currencyCode": "INR",
+    "availableUnits": 422,
+    "vendor": "SUP007",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "dk_005",
+    "description": "Under Desk Cable Tray",
+    "dept": "ACC",
+    "price": 1299.0,
+    "currencyCode": "INR",
+    "availableUnits": 485,
+    "vendor": "SUP021",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "dk_008",
+    "description": "Docking Station 11-in-1",
+    "dept": "ACC",
+    "price": 6299.0,
+    "currencyCode": "INR",
+    "availableUnits": 388,
+    "vendor": "SUP076",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "dk_010",
+    "description": "Footrest Ergonomic",
+    "dept": "ACC",
+    "price": 2499.0,
+    "currencyCode": "INR",
+    "availableUnits": 848,
+    "vendor": "SUP076",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "hs_002",
+    "description": "USB Conference Headset",
+    "dept": "ACC",
+    "price": 5499.0,
+    "currencyCode": "INR",
+    "availableUnits": -5,
+    "vendor": "SUP021",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "hs_003",
+    "description": "Noise Cancelling Headphones",
+    "dept": "ACC",
+    "price": 21999.0,
+    "currencyCode": "INR",
+    "availableUnits": 564,
+    "vendor": "SUP013",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "hs_004",
+    "description": "In-Ear Monitor",
+    "dept": "ACC",
+    "price": 1799.0,
+    "currencyCode": "INR",
+    "availableUnits": 669,
+    "vendor": "SUP021",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "hs_005",
+    "description": "Wireless Earbuds",
+    "dept": "ACC",
+    "price": null,
+    "currencyCode": "INR",
+    "availableUnits": 452,
+    "vendor": "SUP007",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "hs_006",
+    "description": "Mono Call Centre Headset",
+    "dept": "ACC",
+    "price": 2899.0,
+    "currencyCode": "INR",
+    "availableUnits": 679,
+    "vendor": "SUP089",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "hs_007",
+    "description": "Bone Conduction Headset",
+    "dept": "ACC",
+    "price": 9499.0,
+    "currencyCode": "INR",
+    "availableUnits": 271,
+    "vendor": "SUP007",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "hs_008",
+    "description": "Gaming Headset 7.1",
+    "dept": "ACC",
+    "price": 7299.0,
+    "currencyCode": "INR",
+    "availableUnits": 47,
+    "vendor": "SUP021",
+    "lifecycle": "EOL"
+  },
+  {
+    "itemId": "kb_002",
+    "description": "Wireless Compact Keyboard",
+    "dept": "PERIPH",
+    "price": 2899.0,
+    "currencyCode": "INR",
+    "availableUnits": 92,
+    "vendor": "SUP901",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "kb_004",
+    "description": "Split Ergonomic Keyboard",
+    "dept": "PERIPH",
+    "price": 11999.0,
+    "currencyCode": "INR",
+    "availableUnits": 28,
+    "vendor": "SUP068",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "kb_005",
+    "description": "Numeric Keypad",
+    "dept": "PERIPH",
+    "price": 899.0,
+    "currencyCode": "INR",
+    "availableUnits": 164,
+    "vendor": "SUP901",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "kb_008",
+    "description": "Keyboard Wrist Rest Gel",
+    "dept": "PERIPH",
+    "price": 749.0,
+    "currencyCode": "INR",
+    "availableUnits": 390,
+    "vendor": "SUP007",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "kb_011",
+    "description": "Rugged Spill Resistant Keyboard",
+    "dept": "PERIPH",
+    "price": 2699.0,
+    "currencyCode": "INR",
+    "availableUnits": -13,
+    "vendor": "SUP001",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "kb_012",
+    "description": "Keyboard and Mouse Combo",
+    "dept": "PERIPH",
+    "price": 1999.0,
+    "currencyCode": "INR",
+    "availableUnits": 687,
+    "vendor": "SUP007",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "mn_001",
+    "description": "27 Inch QHD Monitor",
+    "dept": "ELEC",
+    "price": 24999.0,
+    "currencyCode": "INR",
+    "availableUnits": 213,
+    "vendor": "SUP001",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "mn_002",
+    "description": "32 Inch 4K Monitor",
+    "dept": "ELEC",
+    "price": 42999.0,
+    "currencyCode": "INR",
+    "availableUnits": 544,
+    "vendor": "SUP021",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "mn_003",
+    "description": "24 Inch FHD Monitor",
+    "dept": "ELEC",
+    "price": 12499.0,
+    "currencyCode": "INR",
+    "availableUnits": 535,
+    "vendor": "SUP089",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "mn_006",
+    "description": "27 Inch 144Hz Gaming Monitor",
+    "dept": "ELEC",
+    "price": 31999.0,
+    "currencyCode": "INR",
+    "availableUnits": 566,
+    "vendor": "SUP055",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "nw_003",
+    "description": "24 Port Managed Switch",
+    "dept": "NET",
+    "price": 18999.0,
+    "currencyCode": "INR",
+    "availableUnits": 556,
+    "vendor": "SUP068",
+    "lifecycle": "EOL"
+  },
+  {
+    "itemId": "nw_004",
+    "description": "USB-C Ethernet Adapter",
+    "dept": "NET",
+    "price": 1199.0,
+    "currencyCode": "INR",
+    "availableUnits": 227,
+    "vendor": "SUP901",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "nw_006",
+    "description": "PoE Injector",
+    "dept": "NET",
+    "price": 1899.0,
+    "currencyCode": "INR",
+    "availableUnits": 687,
+    "vendor": "SUP034",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "nw_011",
+    "description": "48 Port PoE Switch",
+    "dept": "NET",
+    "price": 64999.0,
+    "currencyCode": "INR",
+    "availableUnits": 747,
+    "vendor": "SUP007",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "nw_012",
+    "description": "Powerline Adapter Kit",
+    "dept": "NET",
+    "price": 4599.0,
+    "currencyCode": "INR",
+    "availableUnits": 401,
+    "vendor": "SUP055",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "pw_003",
+    "description": "Surge Protector 6 Way",
+    "dept": "PWR",
+    "price": 1699.0,
+    "currencyCode": "INR",
+    "availableUnits": 190,
+    "vendor": "SUP021",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "pw_005",
+    "description": "UPS 1000VA",
+    "dept": "PWR",
+    "price": 12999.0,
+    "currencyCode": "INR",
+    "availableUnits": 482,
+    "vendor": "SUP089",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "pw_007",
+    "description": "140W GaN Charger",
+    "dept": "PWR",
+    "price": 6999.0,
+    "currencyCode": "INR",
+    "availableUnits": 850,
+    "vendor": "SUP013",
+    "lifecycle": "EOL"
+  },
+  {
+    "itemId": "pw_011",
+    "description": "10000mAh Slim Power Bank",
+    "dept": "PWR",
+    "price": 2299.0,
+    "currencyCode": "INR",
+    "availableUnits": 867,
+    "vendor": "SUP034",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "sd_002",
+    "description": "2TB NVMe SSD",
+    "dept": "STOR",
+    "price": 13999.0,
+    "currencyCode": "INR",
+    "availableUnits": 260,
+    "vendor": "SUP021",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "sd_004",
+    "description": "4TB External HDD",
+    "dept": "STOR",
+    "price": 8999.0,
+    "currencyCode": "INR",
+    "availableUnits": 229,
+    "vendor": "SUP001",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "sd_005",
+    "description": "64GB USB 3.2 Flash Drive",
+    "dept": "STOR",
+    "price": 699.0,
+    "currencyCode": "INR",
+    "availableUnits": 106,
+    "vendor": "SUP001",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "sd_009",
+    "description": "16TB Enterprise HDD",
+    "dept": "STOR",
+    "price": 42999.0,
+    "currencyCode": "INR",
+    "availableUnits": -2,
+    "vendor": "SUP068",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "sd_011",
+    "description": "4TB NVMe SSD",
+    "dept": "STOR",
+    "price": 27999.0,
+    "currencyCode": "INR",
+    "availableUnits": 575,
+    "vendor": "SUP068",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "wm_001",
+    "description": "Wireless Mouse",
+    "dept": "ELEC",
+    "price": 799.0,
+    "currencyCode": "INR",
+    "availableUnits": -6,
+    "vendor": "SUP055",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "wm_005",
+    "description": "Trackball Mouse",
+    "dept": "ELEC",
+    "price": 3499.0,
+    "currencyCode": "INR",
+    "availableUnits": 267,
+    "vendor": "SUP013",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "wm_006",
+    "description": "Silent Click Mouse",
+    "dept": "ELEC",
+    "price": 1099.0,
+    "currencyCode": "INR",
+    "availableUnits": 790,
+    "vendor": "SUP055",
+    "lifecycle": "LIVE"
+  },
+  {
+    "itemId": "wm_007",
+    "description": "Presenter Mouse with Laser Pointer",
+    "dept": "ELEC",
+    "price": 2799.0,
+    "currencyCode": "INR",
+    "availableUnits": 103,
+    "vendor": "SUP013",
+    "lifecycle": "EOL"
+  },
+  {
+    "itemId": "dk_008",
+    "description": "Docking Station 11-in-1",
+    "dept": "ACC",
+    "price": 6299.0,
+    "currencyCode": "INR",
+    "availableUnits": 388,
+    "vendor": "SUP076",
+    "lifecycle": "LIVE"
+  }
+]

@@ -1,0 +1,4 @@
+product_code,product_name,category,unit_price,currency,qty,supplier_code
+wm001,Wireless Mouse,electronics,799,INR,120,SUP42
+kb002,Mechanical Keyboard,peripherals,6499,INR
+mn003,Monitor,electronics,24999,INR,45,SUP07,EXTRA,FIELDS

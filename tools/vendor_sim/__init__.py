@@ -1,0 +1,1 @@
+"""GlobalParts vendor API simulator."""

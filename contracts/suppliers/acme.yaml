@@ -1,0 +1,208 @@
+# =============================================================================
+# ACME Components — supplier CSV drop.
+#
+# This is the messy feed, and it is the point of the demo. ACME writes SKUs
+# without punctuation, lower-cases categories, abbreviates supplier codes, and
+# their extract occasionally carries negative stock and unknown supplier
+# references. Every one of those differences is handled here in configuration.
+#
+# Precedence 20: ACME may introduce SKUs the ERP has not seen, but cannot
+# overwrite an attribute the ERP already masters.
+# =============================================================================
+
+contract:
+  version: "1.1.0"
+  effective_from: 2026-01-15
+  owner: supplier-integrations
+  description: >
+    Weekly catalogue drop from ACME Components. Delivered as CSV to the
+    supplier landing area.
+
+source:
+  id: acme_supplier
+  display_name: ACME Components Ltd
+  type: csv
+  precedence: 20
+  csv:
+    path_glob: samples/acme/*.csv
+    encoding: utf-8
+    delimiter: ","
+    required_headers:
+      - product_code
+      - product_name
+      - category
+      - unit_price
+      - currency
+      - qty
+      - supplier_code
+
+identity:
+  source_record_id: product_code
+
+mapping:
+  # 'wm001' and 'WM-001' both reduce to WM001, which is how an ACME row and an
+  # ERP row for the same product become the same warehouse record.
+  canonical_sku:
+    from: product_code
+    transforms: [trim, sku_normalise]
+
+  product_name:
+    from: product_name
+    transforms: [nfkc, trim, collapse_whitespace, title_case]
+
+  category:
+    from: category
+    transforms: [nullify_placeholders, trim, upper]
+    lookup: category_map
+
+  # 'SUP42' -> 'SUP-042'
+  supplier_id:
+    from: supplier_code
+    transforms: [nullify_placeholders, trim, supplier_id_normalise]
+
+  unit_price:
+    from: unit_price
+    transforms: [nullify_placeholders, trim]
+
+  currency:
+    from: currency
+    transforms: [nullify_placeholders, trim, currency_normalise]
+    default: INR
+
+  quantity_available:
+    from: qty
+    transforms: [nullify_placeholders, trim]
+
+  # ACME's feed carries no lifecycle column, so every row is asserted ACTIVE.
+  status:
+    constant: ACTIVE
+
+lookups:
+  category_map:
+    ELECTRONICS: ELECTRONICS
+    ELEC: ELECTRONICS
+    ACCESSORIES: ACCESSORIES
+    ACC: ACCESSORIES
+    PERIPHERALS: PERIPHERALS
+    PERIPH: PERIPHERALS
+    NETWORKING: NETWORKING
+    NET: NETWORKING
+    STORAGE: STORAGE
+    STOR: STORAGE
+    CABLES: CABLES
+    CBL: CABLES
+    POWER: POWER
+    PWR: POWER
+
+validation:
+  canonical_sku:
+    required: true
+    type: string
+    min_length: 3
+    max_length: 32
+    regex: "^[A-Z0-9]{3,32}$"
+    unique: true
+
+  product_name:
+    required: true
+    type: string
+    min_length: 2
+    max_length: 200
+
+  category:
+    required: true
+    type: string
+    allowed_values:
+      - ELECTRONICS
+      - ACCESSORIES
+      - PERIPHERALS
+      - NETWORKING
+      - STORAGE
+      - CABLES
+      - POWER
+
+  supplier_id:
+    required: true
+    type: string
+    regex: "^SUP-[0-9]{3}$"
+    references:
+      table: core.suppliers
+      column: supplier_id
+
+  unit_price:
+    required: true
+    type: decimal
+    min: 0
+    max: 10000000
+
+  currency:
+    required: true
+    type: string
+    allowed_values: [INR, USD, EUR, GBP]
+
+  # The rule that catches ACME's negative-inventory problem.
+  quantity_available:
+    required: true
+    type: integer
+    min: 0
+    max: 1000000
+
+  status:
+    required: true
+    type: string
+    allowed_values: [ACTIVE, DISCONTINUED]
+
+rules:
+  - name: stocked_items_must_be_priced
+    expr: "quantity_available == 0 or unit_price > 0"
+    message: "An item with stock on hand must carry a non-zero price"
+    severity: error
+
+  - name: foreign_currency_needs_realistic_price
+    expr: "currency == 'INR' or unit_price < 100000"
+    message: "A non-INR price above 100,000 is almost always an unconverted INR figure"
+    severity: warning
+
+reconciliation:
+  checksum_columns:
+    - canonical_sku
+    - product_name
+    - category
+    - supplier_id
+    - unit_price
+    - currency
+
+  null_rate_columns:
+    - product_name
+    - category
+    - supplier_id
+    - unit_price
+
+  # Looser than the ERP. A supplier drop is expected to be imperfect; holding it
+  # to the system-of-record standard would mean a permanently red dashboard,
+  # which is the fastest way to make people stop reading it.
+  thresholds:
+    row_count_delta_pct:
+      warn: 0
+      fail: 1.0
+    quarantine_rate_pct:
+      warn: 2.0
+      fail: 15.0
+    duplicate_rate_pct:
+      warn: 0.5
+      fail: 5.0
+    null_rate_delta_pct:
+      warn: 2.0
+      fail: 10.0
+    orphan_rate_pct:
+      warn: 0.5
+      fail: 5.0
+
+scd:
+  tracked_attributes:
+    - product_name
+    - category
+    - supplier_id
+    - unit_price
+    - currency
+    - status

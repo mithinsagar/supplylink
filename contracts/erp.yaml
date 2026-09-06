@@ -1,0 +1,237 @@
+# =============================================================================
+# ERP master-data extract — the system of record for product attributes.
+#
+# Precedence 10 makes this the most authoritative feed. Supplier and vendor
+# feeds may enrich a SKU the ERP has not seen, but may not overwrite an
+# attribute the ERP has already mastered.
+# =============================================================================
+
+contract:
+  version: "1.3.0"
+  effective_from: 2026-01-01
+  owner: master-data-team
+  description: >
+    Nightly product master extract from the ERP. Fixed-width origin, exported as
+    CSV, so string fields arrive space-padded.
+
+source:
+  id: erp_core
+  display_name: ERP Product Master
+  type: csv
+  precedence: 10
+  description: Nightly full extract, one row per active SKU.
+  csv:
+    path_glob: samples/erp/*.csv
+    encoding: utf-8
+    delimiter: ","
+    # A missing header means the export shape changed. That is a pipeline
+    # failure, not a record failure: loading it would null out a whole column
+    # and reconciliation would report a content mismatch on every row.
+    required_headers:
+      - SKU
+      - Name
+      - Category
+      - Price
+      - Currency
+      - Stock
+      - Supplier
+      - Status
+
+identity:
+  source_record_id: SKU
+
+# ---------------------------------------------------------------------------
+# Mapping: ERP dialect -> canonical model
+# ---------------------------------------------------------------------------
+mapping:
+  canonical_sku:
+    from: SKU
+    transforms: [trim, sku_normalise]
+
+  product_name:
+    from: Name
+    transforms: [nfkc, trim, collapse_whitespace]
+
+  category:
+    from: Category
+    transforms: [nullify_placeholders, trim, upper]
+    lookup: category_map
+
+  supplier_id:
+    from: Supplier
+    transforms: [nullify_placeholders, trim, supplier_id_normalise]
+
+  unit_price:
+    from: Price
+    transforms: [nullify_placeholders, trim]
+
+  currency:
+    from: Currency
+    transforms: [nullify_placeholders, trim, currency_normalise]
+    default: INR
+
+  quantity_available:
+    from: Stock
+    transforms: [nullify_placeholders, trim]
+
+  status:
+    from: Status
+    transforms: [nullify_placeholders, trim, upper]
+    default: ACTIVE
+
+# ---------------------------------------------------------------------------
+# Lookups: every dialect for a category collapses to one canonical value.
+# Unmapped values become null (lookup_passthrough defaults to false) and are
+# then caught by the `required` rule rather than entering the warehouse.
+# ---------------------------------------------------------------------------
+lookups:
+  category_map:
+    ELECTRONICS: ELECTRONICS
+    ELEC: ELECTRONICS
+    ACCESSORIES: ACCESSORIES
+    ACC: ACCESSORIES
+    PERIPHERALS: PERIPHERALS
+    PERIPH: PERIPHERALS
+    NETWORKING: NETWORKING
+    NET: NETWORKING
+    STORAGE: STORAGE
+    STOR: STORAGE
+    CABLES: CABLES
+    CBL: CABLES
+    POWER: POWER
+    PWR: POWER
+
+# ---------------------------------------------------------------------------
+# Validation
+# ---------------------------------------------------------------------------
+validation:
+  canonical_sku:
+    required: true
+    type: string
+    min_length: 3
+    max_length: 32
+    regex: "^[A-Z0-9]{3,32}$"
+    unique: true
+
+  product_name:
+    required: true
+    type: string
+    min_length: 2
+    max_length: 200
+
+  category:
+    required: true
+    type: string
+    allowed_values:
+      - ELECTRONICS
+      - ACCESSORIES
+      - PERIPHERALS
+      - NETWORKING
+      - STORAGE
+      - CABLES
+      - POWER
+
+  supplier_id:
+    required: true
+    type: string
+    regex: "^SUP-[0-9]{3}$"
+    references:
+      table: core.suppliers
+      column: supplier_id
+
+  unit_price:
+    required: true
+    type: decimal
+    min: 0
+    max: 10000000
+
+  currency:
+    required: true
+    type: string
+    allowed_values: [INR, USD, EUR, GBP]
+
+  quantity_available:
+    required: true
+    type: integer
+    min: 0
+    max: 1000000
+
+  status:
+    required: true
+    type: string
+    allowed_values: [ACTIVE, DISCONTINUED]
+
+# ---------------------------------------------------------------------------
+# Cross-field business rules
+# ---------------------------------------------------------------------------
+rules:
+  - name: stocked_items_must_be_priced
+    expr: "quantity_available == 0 or unit_price > 0"
+    message: "An item with stock on hand must carry a non-zero price"
+    severity: error
+
+  - name: discontinued_items_should_be_empty
+    expr: "status == 'ACTIVE' or quantity_available == 0"
+    message: "A discontinued item still shows stock on hand"
+    # A warning, not an error: this is a real housekeeping signal but the record
+    # itself is well formed, and quarantining it would hide a SKU the warehouse
+    # legitimately needs.
+    severity: warning
+
+  - name: high_value_items_need_full_name
+    expr: "unit_price < 50000 or len(product_name) >= 8"
+    message: "High-value items must carry a descriptive name, not an abbreviation"
+    severity: warning
+
+# ---------------------------------------------------------------------------
+# Reconciliation
+# ---------------------------------------------------------------------------
+reconciliation:
+  # Column order is part of the checksum and must not be reordered without a
+  # contract version bump — reordering changes every digest.
+  checksum_columns:
+    - canonical_sku
+    - product_name
+    - category
+    - supplier_id
+    - unit_price
+    - currency
+
+  null_rate_columns:
+    - product_name
+    - category
+    - supplier_id
+    - unit_price
+
+  # The ERP is the system of record, so it is held to a tight standard.
+  thresholds:
+    row_count_delta_pct:
+      warn: 0
+      fail: 0.5
+    quarantine_rate_pct:
+      warn: 1.0
+      fail: 8.0
+    duplicate_rate_pct:
+      warn: 0
+      fail: 3.0
+    null_rate_delta_pct:
+      warn: 1.0
+      fail: 5.0
+    orphan_rate_pct:
+      warn: 0
+      fail: 3.0
+
+# ---------------------------------------------------------------------------
+# History
+# ---------------------------------------------------------------------------
+scd:
+  # quantity_available is deliberately absent: it is a measure, it changes on
+  # every extract, and versioning it would open a new dimension row nightly for
+  # every SKU and bury the price and naming changes that actually matter.
+  tracked_attributes:
+    - product_name
+    - category
+    - supplier_id
+    - unit_price
+    - currency
+    - status

@@ -1,0 +1,199 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+  FORCE_COLOR: "1"
+
+jobs:
+  lint:
+    name: Lint and type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      - name: Ruff
+        run: ruff check src tests tools scripts migrations
+
+      - name: Ruff format
+        run: ruff format --check src tests tools scripts migrations
+
+      - name: mypy
+        run: mypy
+
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    services:
+      postgres:
+        # Matches the Compose and production version. Testing against a
+        # different major version would leave the constraints this project
+        # depends on — a GiST exclusion constraint, a stored generated column —
+        # unverified where it matters.
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: supplylink
+          POSTGRES_PASSWORD: supplylink_local_dev
+          POSTGRES_DB: supplylink_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U supplylink -d supplylink_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      SUPPLYLINK_DATABASE_URL: postgresql+psycopg://supplylink:supplylink_local_dev@localhost:5432/supplylink_test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      - name: Enable btree_gist
+        # Required by the SCD-2 exclusion constraint. The migration creates it,
+        # but it needs superuser, so it is granted here explicitly.
+        run: |
+          PGPASSWORD=supplylink_local_dev psql -h localhost -U supplylink -d supplylink_test \
+            -c "CREATE EXTENSION IF NOT EXISTS btree_gist;"
+
+      - name: Generate the synthetic dataset
+        # Deterministic, so the fixtures are identical on every run.
+        run: python scripts/generate_sample_data.py
+
+      - name: Verify migrations round-trip
+        # A migration you cannot roll back is not a migration.
+        run: |
+          alembic upgrade head
+          alembic downgrade base
+          alembic upgrade head
+
+      - name: Run tests
+        run: pytest --cov --cov-report=term-missing --cov-report=xml
+
+      - name: Upload coverage
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml
+          if-no-files-found: error
+
+  demo:
+    name: End-to-end demo
+    runs-on: ubuntu-latest
+    # Proves the demo in the README actually runs, on a clean machine, from
+    # nothing. A README that has drifted from the code is worse than no README.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: supplylink
+          POSTGRES_PASSWORD: supplylink_local_dev
+          POSTGRES_DB: supplylink
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U supplylink -d supplylink"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      SUPPLYLINK_DATABASE_URL: postgresql+psycopg://supplylink:supplylink_local_dev@localhost:5432/supplylink
+      # No API key in CI, so the demo exercises the deterministic fallback —
+      # which is exactly the path that must keep working during an outage.
+      SUPPLYLINK_LLM_ENABLED: "false"
+      VENDOR_API_TOKEN: demo-local-token
+      VENDOR_API_URL: http://localhost:8081
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      - name: Enable btree_gist
+        run: |
+          PGPASSWORD=supplylink_local_dev psql -h localhost -U supplylink -d supplylink \
+            -c "CREATE EXTENSION IF NOT EXISTS btree_gist;"
+
+      - name: Run the demo
+        run: python scripts/demo.py --no-pause
+
+      - name: Verify the API serves the loaded data
+        run: |
+          uvicorn supplylink.api:app --port 8000 &
+          for _ in $(seq 1 40); do curl -sf localhost:8000/health >/dev/null && break; sleep 0.5; done
+          curl -sf localhost:8000/health | tee /dev/stderr | grep -q '"status":"ok"'
+          curl -sf localhost:8000/runs | python -c "import json,sys; assert json.load(sys.stdin)"
+          curl -sf localhost:8000/skus/MN001/history | python -c "import json,sys; assert len(json.load(sys.stdin)) >= 2"
+
+  docker:
+    name: Docker build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build the runtime image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: runtime
+          push: false
+          load: true
+          tags: supplylink:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify the image runs and is non-root
+        run: |
+          docker run --rm supplylink:ci supplylink version
+          test "$(docker run --rm --entrypoint id supplylink:ci -un)" = "supplylink"
+
+      - name: Verify the stack starts and migrates itself
+        run: |
+          docker compose up -d --wait --wait-timeout 180
+          docker compose ps
+          curl -sf localhost:8000/health | grep -q '"status":"ok"'
+          docker compose run --rm cli run --source erp_core
+          docker compose down -v
