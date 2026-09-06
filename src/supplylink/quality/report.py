@@ -117,9 +117,15 @@ def _attempt_generation(provider: LLMProvider, metrics: dict[str, Any]) -> dict[
 
     guard = verify(response.text, metrics)
     if not guard.verified:
+        # Deliberately carries no figures at all — not the invented ones, not
+        # even how many there were. This reason is rendered into the
+        # deterministic report, so any number here would be an unverifiable
+        # figure printed in the very document written to replace one. The
+        # specifics live in numeric_guard.unverified and in the rejected draft.
         reason = (
-            f"numeric guard rejected the generated report: "
-            f"{', '.join(guard.unverified)} do not correspond to any computed metric"
+            "the numeric guard rejected the generated report: it contained "
+            "figures that do not correspond to any computed metric "
+            "(see numeric_guard.unverified)"
         )
         log.warning(
             "generated report failed the numeric guard",

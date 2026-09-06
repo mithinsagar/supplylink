@@ -179,6 +179,19 @@ class TestFallbackReport:
         """The fallback is never less accurate than a generated report."""
         assert verify(fallback.render(METRICS, "reason"), METRICS).verified
 
+    def test_a_guard_rejection_reason_carries_no_figures(self) -> None:
+        """Otherwise the deterministic report would fail its own guard.
+
+        The reason is rendered into the report, so *any* number in it — the
+        invented figures, or even how many there were — would be an unverifiable
+        figure printed in the very document written to replace one.
+        """
+        reason = (
+            "the numeric guard rejected the generated report: it contained figures "
+            "that do not correspond to any computed metric (see numeric_guard.unverified)"
+        )
+        assert verify(fallback.render(METRICS, reason), METRICS).verified
+
     def test_handles_a_run_with_no_failures(self) -> None:
         clean = {**METRICS, "top_failures": []}
         assert "No records were rejected." in fallback.render(clean, "reason")
