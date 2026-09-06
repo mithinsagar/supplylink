@@ -78,8 +78,16 @@ def cell(value: Any) -> str:
 
 
 def emit_json(payload: Any) -> None:
-    """Machine-readable output on stdout."""
-    console.print_json(json.dumps(payload, default=str))
+    """Machine-readable output on stdout.
+
+    Written with a plain ``print``, deliberately not through Rich. Rich styles
+    JSON, and when it believes it is writing to a terminal — which ``FORCE_COLOR``
+    or a CI runner can make it believe — it wraps the output in ANSI escape
+    sequences. ``supplylink runs list --json | jq`` then fails on a leading
+    escape code. ``--json`` is a machine interface and must be byte-for-byte
+    parseable in every environment.
+    """
+    print(json.dumps(payload, default=str, indent=2))
 
 
 def render_run_result(result: PipelineResult, overall: str) -> None:

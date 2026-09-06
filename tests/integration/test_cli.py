@@ -195,6 +195,38 @@ class TestInspection:
         assert invoke("sku", "show", "ZZZ999").exit_code == EXIT_FAILED
 
 
+class TestMachineOutput:
+    """--json is a machine interface and must be parseable everywhere."""
+
+    def test_json_output_carries_no_ansi_escapes(
+        self, erp_seeded, write_erp_feed, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Rich styles JSON when it believes it is writing to a terminal.
+
+        FORCE_COLOR — which CI runners commonly set — makes it believe exactly
+        that, and the leading escape sequence breaks `supplylink … --json | jq`.
+        """
+        monkeypatch.setenv("FORCE_COLOR", "1")
+        monkeypatch.setenv("CI", "true")
+        write_erp_feed(GOOD_ROWS)
+        run_pipeline("erp_core", trigger="test")
+
+        for command in (
+            ["runs", "list", "--json"],
+            ["contracts", "list", "--json"],
+            ["health", "--json"],
+        ):
+            stdout = invoke(*command).stdout
+            assert "\x1b[" not in stdout, f"{command} emitted ANSI escapes"
+            json.loads(stdout)
+
+    def test_json_output_is_the_only_thing_on_stdout(self, erp_seeded, write_erp_feed) -> None:
+        """No banner, no progress line — a caller pipes this straight into a parser."""
+        write_erp_feed(GOOD_ROWS)
+        payload = json.loads(invoke("run", "--source", "erp_core", "--json").stdout)
+        assert payload["counters"]["records_received"] == 3
+
+
 class TestSeed:
     def test_seeding_is_idempotent(self, db: None) -> None:
         first = invoke("db", "seed")
