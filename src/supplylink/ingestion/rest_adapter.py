@@ -297,7 +297,10 @@ class RestSourceAdapter(SourceAdapter):
         """Honour a server's ``Retry-After`` when it sends one.
 
         The server knows when it will be ready and we do not. Capped at the
-        contract's maximum so a hostile or broken header cannot stall the run.
+        contract's maximum so a hostile or broken header cannot stall the run,
+        and floored at zero — ``time.sleep`` rejects a negative delay, so a
+        server answering ``Retry-After: -1`` would otherwise turn a retryable
+        503 into an unhandled ValueError mid-run.
         """
         if response is None:
             return None
@@ -305,9 +308,14 @@ class RestSourceAdapter(SourceAdapter):
         if not header:
             return None
         try:
-            return min(float(header), self.config.backoff_max_seconds)
+            seconds = float(header)
         except ValueError:
             return None  # HTTP-date form; not worth parsing for this purpose
+        if seconds < 0:
+            # Malformed under RFC 9110, which requires a non-negative delay.
+            # Fall through to the normal backoff rather than retrying instantly.
+            return None
+        return min(seconds, self.config.backoff_max_seconds)
 
     # -- response shaping -------------------------------------------------
 

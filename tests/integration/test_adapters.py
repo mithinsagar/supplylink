@@ -325,6 +325,29 @@ class TestRestAdapter:
         rest_adapter(handler).extract()
         assert slept == [8.0], "capped at backoff_max_seconds"
 
+    def test_a_negative_retry_after_falls_back_to_backoff(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """``time.sleep`` rejects a negative delay, so the header cannot reach it.
+
+        RFC 9110 requires a non-negative delay-seconds. A server sending ``-1``
+        is malformed, and passing that straight through turned a retryable 503
+        into an unhandled ValueError part-way through a run.
+        """
+        slept: list[float] = []
+        monkeypatch.setattr("supplylink.ingestion.rest_adapter.time.sleep", slept.append)
+        attempts = {"n": 0}
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            attempts["n"] += 1
+            if attempts["n"] == 1:
+                return httpx.Response(503, headers={"Retry-After": "-1"})
+            return httpx.Response(200, json={"items": [item(1)], "meta": {"totalPages": 1}})
+
+        rest_adapter(handler).extract()
+        assert slept, "the 503 should still have been retried"
+        assert all(delay >= 0 for delay in slept), f"time.sleep would reject {slept}"
+
 
 class TestRestCredentials:
     def test_a_missing_credential_names_the_variable(self, monkeypatch: pytest.MonkeyPatch) -> None:
